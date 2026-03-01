@@ -1,0 +1,4 @@
+models/
+Dictate.app/Contents/MacOS/Dictate
+Dictate.app/Contents/_CodeSignature/
+.DS_Store
