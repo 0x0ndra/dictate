@@ -201,12 +201,13 @@ class WaveformPanel {
     private let rawPath = "/tmp/dictate_recording.raw"
 
     init() {
-        let panelW: CGFloat = 160
-        let panelH: CGFloat = 48
+        let panelW: CGFloat = 200
+        let panelH: CGFloat = 52
+        let cornerR: CGFloat = 22
 
         panel = NSPanel(
             contentRect: NSRect(x: 0, y: 0, width: panelW, height: panelH),
-            styleMask: [.nonactivatingPanel, .hudWindow],
+            styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
             defer: false
         )
@@ -219,18 +220,21 @@ class WaveformPanel {
         panel.isMovableByWindowBackground = false
         panel.hidesOnDeactivate = false
 
-        let effect = NSVisualEffectView(frame: NSRect(x: 0, y: 0, width: panelW, height: panelH))
-        effect.material = .hudWindow
+        let container = NSView(frame: NSRect(x: 0, y: 0, width: panelW, height: panelH))
+        container.wantsLayer = true
+        container.layer?.cornerRadius = cornerR
+        container.layer?.masksToBounds = true
+
+        let effect = NSVisualEffectView(frame: container.bounds)
+        effect.material = .sidebar
         effect.state = .active
         effect.blendingMode = .behindWindow
-        effect.wantsLayer = true
-        effect.layer?.cornerRadius = 14
-        effect.layer?.masksToBounds = true
+        container.addSubview(effect)
 
-        waveformView = WaveformView(frame: NSRect(x: 0, y: 0, width: panelW, height: panelH))
-        effect.addSubview(waveformView)
+        waveformView = WaveformView(frame: container.bounds)
+        container.addSubview(waveformView)
 
-        panel.contentView = effect
+        panel.contentView = container
     }
 
     func show() {
